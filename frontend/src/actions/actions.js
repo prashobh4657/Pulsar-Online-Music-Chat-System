@@ -7,7 +7,6 @@ const themeCycle = ['yellow', 'red', 'blue', 'green'];
 export const changeTheme = () => {
     const currentTheme = lS.get('theme') || 'red';
     const nextTheme = getNextTheme(currentTheme);
-
     lS.set('theme', nextTheme);
     store.dispatch({
         type: ActionTypes.CHANGE_THEME,

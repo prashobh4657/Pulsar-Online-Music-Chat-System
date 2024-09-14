@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { connect } from 'react-redux';
+import './css/main.scss';
 
-// containers
+// Containers
 import Dashboard from "./containers/Dashboard";
 import Login from "./containers/Login";
 import Signup from "./containers/Signup";
@@ -10,93 +13,80 @@ import Friends from "./containers/Friends";
 import Groups from "./containers/Groups";
 import Playlists from "./containers/Playlists";
 
-// components
+// Components
 import Logo from "./components/_common/Logo";
 import NavBar from "./components/_common/NavBar";
 import Notification from "./components/_common/Notification";
 
-// third party
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { connect } from 'react-redux';
-
-// config
+// Config
 import { dashboardNavBarTabs, themeColors } from "./config";
-
-// css
-import './css/main.scss';
 
 const App = ({ login, theme }) => {
     const { success } = login;
     const navBarRef = useRef();
 
-    const handleCloseDropdown = () => {
-        if (navBarRef.current) {
-            navBarRef.current.closeDropdown();
-        }
-    }
+    const handleCloseDropdown = useCallback(() => {
+        navBarRef.current?.closeDropdown();
+    }, []);
 
     return (
-        <div className='app' style={{ "--theme": themeColors[theme.color] }} onClick={handleCloseDropdown}>
+        <div className="app" style={{ "--theme": themeColors[theme.color] }} onClick={handleCloseDropdown}>
+            <Notification />
             <Router>
-                <Notification />
-                {
-                    !success &&
-                    <Routes>
-                        <Route path="/" element={<Dashboard />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/signup" element={<Signup />} />
-                        <Route path="*" element={<Navigate to="/login" />} />
-                    </Routes>
-                }
-                {
-                    success &&
-                    <SecureRoutes 
-                        location={window.location}
-                        navTabs={
-                            dashboardNavBarTabs.slice(0, -2).concat([
-                                {
-                                    label: login?.user?.fullname || 'Sign Out',
-                                    value: 'signout',
-                                    path: '/',
-                                }
-                            ])
-                        } 
-                        navBarRef={navBarRef}
-                    />
-                }
+                <Routes>
+                    {!success ? (
+                        <>
+                            <Route path="/" element={<Dashboard />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/signup" element={<Signup />} />
+                            <Route path="*" element={<Navigate to="/login" />} />
+                        </>
+                    ) : (
+                        <Route
+                            path="*"
+                            element={
+                                <SecureRoutes
+                                    navTabs={getNavTabs(login)}
+                                    navBarRef={navBarRef}
+                                />
+                            }
+                        />
+                    )}
+                </Routes>
             </Router>
         </div>
     );
 };
 
-export default connect((store) => ({
-    login: store.login,
-    theme: store.theme,
-}))(App);
+// Helper function to generate navTabs
+const getNavTabs = (login) => {
+    return dashboardNavBarTabs.slice(0, -2).concat([
+        {
+            label: login?.user?.fullname || 'Sign Out',
+            value: 'signout',
+            path: '/',
+        },
+    ]);
+};
 
+const SecureRoutes = ({ navTabs, navBarRef }) => {
+    const [selectedTab, setSelectedTab] = useState(navTabs[1]?.value || '');
 
-const SecureRoutes = ({ location, navTabs, navBarRef }) => {
-    const [selectedTab, setSelectedTab] = useState(navTabs.length > 1 ? navTabs[1].value : '');
-
-    // useEffect(() => {
-    //     setSelectedTab(navTabs.find((tab) => tab.path === location.pathname)?.value || navTabs[1].value);
-    // }, [location.pathname, navTabs]);
     useEffect(() => {
-        const matchingTab = navTabs.find((tab) => tab.path === location.pathname);
-        setSelectedTab(matchingTab ? matchingTab.value : (navTabs.length > 1 ? navTabs[1].value : ''));
-    }, [location.pathname, navTabs]);
-
+        const matchingTab = navTabs.find((tab) => tab.path === window.location.pathname);
+        setSelectedTab(matchingTab ? matchingTab.value : navTabs[1]?.value || '');
+    }, [navTabs]);
 
     return (
         <div className="layout-container">
             <div className="site-header">
                 <Logo />
-                <NavBar 
+                <NavBar
                     tabs={navTabs}
                     selectedTab={selectedTab}
                     switchTab={(tab) => setSelectedTab(tab.value)}
                     classes="secure"
-                    showSearch={true}
+                    showSearch
                     connectedRef={navBarRef}
                 />
             </div>
@@ -112,3 +102,8 @@ const SecureRoutes = ({ location, navTabs, navBarRef }) => {
     );
 };
 
+// Connect to Redux store
+export default connect((store) => ({
+    login: store.login,
+    theme: store.theme,
+}))(App);
