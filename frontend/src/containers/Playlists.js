@@ -23,11 +23,12 @@ import { RiRepeat2Fill, RiRepeatOneFill } from "react-icons/ri";
 import { getReadableTime } from "../utils";
 
 // actions
-import { fetchPlaylists, fetchPlaylist } from "../actions/playlists";
+// import { fetchPlaylists, fetchPlaylist } from "../actions/playlists";
+import { dummyPlaylists, dummyPlaylist } from "../dummy";   
+
 
 // config
 import { themeColors } from "../config";
-import { dummyPlaylists, dummyPlaylist } from "../dummy";
 
 const Playlists = ({ theme, playlistsList, playlistDetails }) => {
     const { listLoading, listData } = playlistsList;
