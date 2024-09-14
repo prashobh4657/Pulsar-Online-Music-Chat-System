@@ -26,6 +26,13 @@ export const handleLogin = async (payload,navigate) => {
     }
 }
 
+export const handleSignout = (navigate) => {
+    lS.remove('auth');
+    store.dispatch({ type: ActionTypes.USER_SIGNOUT });
+    showNotification('Sign out successful');
+    setTimeout(() => navigate('/login'), 0);
+};
+
 const handleLoginSuccess = (data, navigate) => {
     store.dispatch({
         type: ActionTypes.USER_LOGIN_SUCCESS,
@@ -41,12 +48,6 @@ const handleLoginFailure = (error) => {
         payload: error.message || 'An error occurred'
     });
     showNotification('Login failed', 'error');
-};
-export const handleSignout = (navigate) => {
-    lS.remove('auth');
-    store.dispatch({ type: ActionTypes.USER_SIGNOUT });
-    showNotification('Sign out successful');
-    setTimeout(() => navigate('/login'), 0);
 };
 
 const showNotification = (message, color = 'success') => {
