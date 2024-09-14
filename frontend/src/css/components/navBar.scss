@@ -55,9 +55,6 @@
         width: 100%;
         background: linear-gradient(90deg, rgba(25,25,25,1) 0%, rgba(32,32,32,1) 100%);
         padding-right: 10px;
-        // overflow-x: hidden;
-        // overflow-y: visible;
-        // hide scroll bar
         scrollbar-width: none;
         &::-webkit-scrollbar {
             display: none;

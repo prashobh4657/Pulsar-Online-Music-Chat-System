@@ -1,22 +1,3 @@
-// general helper functions
-
-export const capitaliseText = (val) => {
-	val = String(val).charAt(0).toUpperCase() + String(val).slice(1);
-	return val;
-};
-
-export const capitaliseTextStrict = ( val ) => {
-	let newStr = "";
-	for(let i = 0; i < val.length; i++) {
-		if (i === 0) {
-			newStr += val[i].toUpperCase();
-		} else {
-			newStr += val[i].toLowerCase();
-		}
-	}
-	return newStr;
-}
-
 export const isLoggedin = () => {
 	if(lS.get('auth')) {
 		return true;
@@ -57,12 +38,8 @@ export const lS = {
 window.lS = lS;
 
 export const getReadableTime = (duration) => {
-	// get number of full minutes
 	const minutes = Math.floor(duration / 60);
-
-	// get remainder of seconds
 	const seconds = duration % 60;
-
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
