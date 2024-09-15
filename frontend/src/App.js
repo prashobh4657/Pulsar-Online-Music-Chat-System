@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, {useRef, useCallback } from "react";
 import { BrowserRouter as Router} from 'react-router-dom';
 import { connect } from 'react-redux';
 import './css/main.scss';
