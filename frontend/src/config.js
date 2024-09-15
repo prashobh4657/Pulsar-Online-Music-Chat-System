@@ -72,3 +72,14 @@ export const themeColors = {
    blue: '#5995fb',
    green: '#2ecc71',
 };
+
+// Helper function to generate navTabs
+export const dashboardNavigationBarTabs = (login) => {
+    return dashboardNavBarTabs.slice(0, -2).concat([
+        {
+            label: login?.user?.fullname || 'Sign Out',
+            value: 'signout',
+            path: '/',
+        },
+    ]);
+};
