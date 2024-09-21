@@ -1,5 +1,4 @@
 import { dispatchAction, lS } from "../utils";
-import { store } from "../redux/store";
 import { ActionTypes } from "./_types";
 
 const themeCycle = ['yellow', 'red', 'blue', 'green'];

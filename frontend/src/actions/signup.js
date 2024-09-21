@@ -1,13 +1,12 @@
 import { ActionTypes } from "./_types";
-import { store } from "../redux/store";
+import {API_BASE_URL,ENDPOINTS} from "../utils/Constants"
 import { dispatchAction, showNotification } from "../utils/index";
-// Constants
-const API_URL = "http://127.0.0.1:5000/signup";
+
 
 export const handleSignup = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_SIGNUP_REQUEST);
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_BASE_URL+ENDPOINTS.SIGNUP, {
       method: "POST",
       body: JSON.stringify(payload),
       headers: { "Content-Type": "application/json" },

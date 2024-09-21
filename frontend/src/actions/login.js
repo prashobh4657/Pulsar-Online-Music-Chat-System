@@ -1,14 +1,11 @@
 import { dispatchAction, lS, showNotification } from "../utils/index";
 import { ActionTypes } from "./_types";
-import { store } from "../redux/store";
-
-const API_URL = "http://127.0.0.1:5000/login";
-const NOTIFICATION_TIMEOUT = 3000;
+import {API_BASE_URL,ENDPOINTS} from "../utils/Constants"
 
 export const handleLogin = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_LOGIN_REQUEST);
   try {
-    const response = await fetch(API_URL, {
+    const response = await fetch(API_BASE_URL+ENDPOINTS.LOGIN, {
       method: "POST",
       body: JSON.stringify(payload),
       headers: {

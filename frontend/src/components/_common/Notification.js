@@ -7,9 +7,6 @@ import { Toast } from "react-bootstrap";
 // third party
 import { connect } from "react-redux";
 
-// store
-import { store } from "../../redux/store";
-
 // actions
 import { ActionTypes } from "../../actions/_types";
 import { dispatchAction } from "../../utils";

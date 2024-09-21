@@ -9,9 +9,6 @@ import Logo from "../components/_common/Logo";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-// store
-import { store } from "../redux/store";
-
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 // actions

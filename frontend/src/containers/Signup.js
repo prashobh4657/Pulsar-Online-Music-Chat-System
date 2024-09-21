@@ -11,9 +11,6 @@ import { Link } from "react-router-dom";
 
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
-// store
-import { store } from "../redux/store";
-
 // actions
 import { ActionTypes } from "../actions/_types";
 import { handleSignup } from "../actions/signup";

@@ -14,9 +14,6 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { debounce } from "lodash";
 
-// store
-import { store } from "../../redux/store";
-
 // icons
 import { IconContext } from "react-icons";
 import { IoIosSearch } from "react-icons/io";
