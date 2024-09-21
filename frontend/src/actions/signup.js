@@ -1,20 +1,11 @@
 import { ActionTypes } from "./_types";
-import {API_BASE_URL,ENDPOINTS} from "../utils/Constants"
-import { dispatchAction, showNotification } from "../utils/index";
-
+import { ENDPOINTS } from "../utils/Constants";
+import { dispatchAction, showNotification, apiRequest } from "../utils/index";
 
 export const handleSignup = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_SIGNUP_REQUEST);
   try {
-    const response = await fetch(API_BASE_URL+ENDPOINTS.SIGNUP, {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-Type": "application/json" },
-    });
-
-    const data = await response.json();
-    console.log("Signup response:", data);
-
+    const data = await apiRequest(ENDPOINTS.SIGNUP, payload);
     if (data.success) {
       handleSignupSuccess(payload.username, data.message, navigate);
     } else {

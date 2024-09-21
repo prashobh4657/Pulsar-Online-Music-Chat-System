@@ -1,7 +1,6 @@
 import { store } from "../redux/store";
 import { ActionTypes } from "../actions/_types";
-
-export const NOTIFICATION_TIMEOUT = 3000;
+import {API_BASE_URL,NOTIFICATION_TIMEOUT} from "./Constants"
 
 export const isLoggedin = () => {
   if (lS.get("auth")) {
@@ -79,4 +78,19 @@ export const dispatchAction = (type, payload = {}) => {
     type,
     payload,
   });
+};
+
+export const apiRequest = async (endpoint, payload, method = 'POST') => {
+  const response = await fetch(API_BASE_URL+endpoint, {
+      method,
+      body: JSON.stringify(payload),
+      headers: {
+          "Content-Type": "application/json",
+      },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+      throw new Error(data.error || 'An error occurred');
+  }
+  return data;
 };
