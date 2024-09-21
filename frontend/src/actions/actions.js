@@ -1,4 +1,4 @@
-import { lS } from "../utils";
+import { dispatchAction, lS } from "../utils";
 import { store } from "../redux/store";
 import { ActionTypes } from "./_types";
 
@@ -8,10 +8,7 @@ export const changeTheme = () => {
     const currentTheme = lS.get('theme') || 'red';
     const nextTheme = getNextTheme(currentTheme);
     lS.set('theme', nextTheme);
-    store.dispatch({
-        type: ActionTypes.CHANGE_THEME,
-        payload: { color: nextTheme }
-    });
+    dispatchAction(ActionTypes.CHANGE_THEME,{ color: nextTheme })
 }
 
 const getNextTheme = (currentTheme) => {
