@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 const Profile = ({ theme }) => {
   return (
 <div className="profile-container">
-  <div className="left-side">
+  <div className="left-part">
     <div className="profile-picture">
       <img src="/stock/dashboard2.png" alt="Profile pic"/>
     </div>
@@ -14,7 +14,9 @@ const Profile = ({ theme }) => {
     </div>
   </div>
 
-  <div className="profile-settings">Profile Settings</div>
+  <div className="profile-settings">
+    
+  </div>
 </div>
   );
 };

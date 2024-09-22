@@ -5,30 +5,33 @@
   padding: 20px;
 }
 
-.left-side {
+#profilePic{
+ width: 100px;
+}
+.left-part {
   display: flex;
   flex-direction: column; /* Stack image and buttons vertically */
+  flex-wrap: wrap;
 }
 
 .profile-picture img {
   width: 150px; 
   height: auto;
-  margin-bottom: 20px; 
+  margin: 20px;
 }
 
 .button-container {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  
 }
 
 .popup-button {
-  padding: 10px 15px;
-  border: 1px solid #007BFF;
   background-color: transparent;
   color: #007BFF;
   cursor: pointer;
-  border-radius: 5px;
+  font-size: 30px;
 }
 
 .popup-button:hover {
