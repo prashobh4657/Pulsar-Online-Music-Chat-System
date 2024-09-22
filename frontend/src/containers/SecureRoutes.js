@@ -4,6 +4,8 @@ import Search from "./Search";
 import Friends from "./Friends";
 import Groups from "./Groups";
 import Playlists from "./Playlists";
+import Profile from "./Profile";
+
 
 const SecureRoutes = () => {
     return (
@@ -13,6 +15,7 @@ const SecureRoutes = () => {
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path="/playlists" element={<Playlists />} />
+                <Route path="/profile" element={<Profile />} />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
     );

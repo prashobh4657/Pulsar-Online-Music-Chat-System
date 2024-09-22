@@ -111,6 +111,12 @@ const NavBar = ({
     navigate("/login");
   }, [navigate]);
 
+  const handleViewProfile = useCallback(() => {
+    navigate("/profile");
+  }, [navigate]);
+
+
+
   return (
     <div
       className={"navbar-container " + classes}
@@ -132,7 +138,7 @@ const NavBar = ({
             )}
             {isDropdownOpen && (
               <div className="dropdown">
-                <div className="action">View Profile</div>
+                <div className="action" onClick={handleViewProfile}>View Profile</div>
                 <div className="action" onClick={handleSignoutAndNavigate}>
                   Sign Out
                 </div>

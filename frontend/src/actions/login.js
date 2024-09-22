@@ -6,6 +6,7 @@ import {
 } from "../utils/index";
 import { ActionTypes } from "./_types";
 import { ENDPOINTS } from "../utils/Constants";
+
 export const handleLogin = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_LOGIN_REQUEST);
   const data = await apiRequest(ENDPOINTS.LOGIN, payload);
