@@ -72,7 +72,6 @@ def userRegister():
 @app.route("/login", methods=["POST"])
 def userLogin():
     data = request.json
-    print(data)
     username = data.get('username')
     password = data.get('password')
     
@@ -116,6 +115,177 @@ def userLogin():
         }
         return jsonify(response), 400
     
+
+
+
+
+
+# Creation of database 
+user_info = []
+songs = []
+friends = []
+artist_fan_group = []
+group_members = []
+favourite_song_list = []
+playlist_info = []
+favourite_playlist = []
+playlist_songs = []
+private_message = []
+group_message = []
+
+def get_next_id(table):
+    return len(table) + 1  # Use the length of the list as the next ID
+
+def insert_user_info(values):
+    user_id = get_next_id(user_info)
+    user_info.append({
+        'id': user_id,  # Add id field
+        'fullname': values['fullname'],
+        'username': values['username'],
+        'email': values['email'],
+        'password': values['password']
+    })
+
+def insert_songs(values):
+    sid = get_next_id(songs)  # Use get_next_id for song ID
+    songs.append({
+        'id': sid,  # Add id field
+        'title': values['title'],
+        'artist': values['artist'],
+        'album': values['album'],
+        'year': int(values['year']),
+        'durationsec': int(values['durationsec'])
+    })
+
+def insert_friends(values):
+    friends.append({
+        'userid': int(values['userid']),
+        'friendid': int(values['friendid'])
+    })
+
+def insert_artist_fan_group(values):
+    group_id = get_next_id(artist_fan_group)  # Use get_next_id for group ID
+    artist_fan_group.append({
+        'id': group_id,  # Add id field
+        'artist': values['artist'],
+        'groupname': values['groupname'],
+        'description': values['description']
+    })
+
+def insert_group_members(values):
+    group_members.append({
+        'groupid': int(values['groupid']),
+        'userid': int(values['userid'])
+    })
+
+def insert_favourite_song_list(values):
+    favourite_song_list.append({
+        'userid': int(values['userid']),
+        'sid': int(values['sid'])
+    })
+
+def insert_playlist_info(values):
+    pid = get_next_id(playlist_info)  # Use get_next_id for playlist ID
+    playlist_info.append({
+        'id': pid,  # Add id field
+        'pname': values['pname']
+    })
+
+def insert_favourite_playlist(values):
+    favourite_playlist.append({
+        'userid': int(values['userid']),
+        'pid': int(values['pid'])
+    })
+
+def insert_playlist_songs(values):
+    playlist_songs.append({
+        'pid': int(values['pid']),
+        'sid': int(values['sid'])
+    })
+
+def insert_private_message(values):
+    msgid = get_next_id(private_message)  # Use get_next_id for message ID
+    private_message.append({
+        'id': msgid,  # Add id field
+        'message_date': values['message_date'],
+        'from1': int(values['from1']),
+        'to1': int(values['to1']),
+        'subject': values['subject'],
+        'body': values['body']
+    })
+
+def insert_group_message(values):
+    msgid = get_next_id(group_message)  # Use get_next_id for message ID
+    group_message.append({
+        'id': msgid,  # Add id field
+        'message_date': values['message_date'],
+        'from1': int(values['from1']),
+        'groupid': int(values['groupid']),
+        'subject': values['subject'],
+        'body': values['body']
+    })
+
+table_insert_map = {
+    'user_info': insert_user_info,
+    'songs': insert_songs,
+    'friends': insert_friends,
+    'artist_fan_group': insert_artist_fan_group,
+    'group_members': insert_group_members,
+    'favourite_song_list': insert_favourite_song_list,
+    'playlist_info': insert_playlist_info,
+    'favourite_playlist': insert_favourite_playlist,
+    'playlist_songs': insert_playlist_songs,
+    'private_message': insert_private_message,
+    'group_message': insert_group_message
+}
+
+@app.route('/insert', methods=['POST'])
+def insert_data():
+    data = request.json
+    
+    # Expecting the JSON structure to have 'table' and 'values'
+    table_name = data['table']
+    values = data['values']
+    
+    # Check if the table name is valid and call the corresponding insert function
+    if table_name in table_insert_map:
+        # Ensure values are a list of dictionaries
+        if isinstance(values, list) and all(isinstance(value, dict) for value in values):
+            for value in values:
+                table_insert_map[table_name](value)  # Insert each object
+            return jsonify({"status": "success", "message": f"Data inserted into {table_name}"}), 201
+        else:
+            return jsonify({"status": "error", "message": "Invalid values format; must be a list of dictionaries"}), 400
+    else:
+        return jsonify({"status": "error", "message": "Invalid table name"}), 400
+
+# Endpoint to get current in-memory data
+@app.route('/data/<table_name>', methods=['GET'])
+def get_data(table_name):
+    if table_name == 'user_info':
+        return jsonify(user_info)
+    elif table_name == 'songs':
+        return jsonify(songs)
+    elif table_name == 'friends':
+        return jsonify(friends)
+    elif table_name == 'artist_fan_group':
+        return jsonify(artist_fan_group)
+    elif table_name == 'group_members':
+        return jsonify(group_members)
+    elif table_name == 'favourite_song_list':
+        return jsonify(favourite_song_list)
+    elif table_name == 'playlist_info':
+        return jsonify(playlist_info)
+    elif table_name == 'favourite_playlist':
+        return jsonify(favourite_playlist)
+    elif table_name == 'playlist_songs':
+        return jsonify(playlist_songs)
+    elif table_name == 'private_message':
+        return jsonify(private_message)
+    elif table_name == 'group_message':
+        return jsonify(group_message)
+    else:
+        return jsonify({"status": "error", "message": "Invalid table name"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -296,3 +466,6 @@ if __name__ == '__main__':
 #     obj['songs'] = songs
 
 #     return json.dumps({ "data": obj, "success": True}, default=str)
+
+
+

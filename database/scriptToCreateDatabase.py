@@ -20,8 +20,6 @@ tables = {
     "group_message": "group_message.json"
 }
 
-# print(f"Current working directory: {os.getcwd()}") 
-
 
 def read_json_file(filename):
     """Read a JSON file and return its contents."""
@@ -48,10 +46,11 @@ def insert_data(data):
 for table, json_file in tables.items():
     if os.path.exists(json_file):
         data = read_json_file(json_file)
-        # print(f"Inserting data for {table}: {data}")  # Show the data being inserted
+        # print(f"Inserting data for {table}") 
         insert_data({"table": table, "values": data})  # Call insert_data with the whole entry
     else:
         print(f"File {json_file} not found!")
 
 
 # RUN THIS SCRIPT WHEN CURRENT DIRECTORY IS IN DATABASE FOLDER ONLY;
+# print(f"Current working directory: {os.getcwd()}")  (IT SHOULD PRINT /database folder in which json files are present);
