@@ -66,8 +66,6 @@ def userRegister():
     users.append(user)
     return jsonify({"success": True, "message": "Signup successful"}), 201
 
-
-
 # User - Login
 @app.route("/login", methods=["POST"])
 def userLogin():
@@ -120,7 +118,7 @@ def userLogin():
 
 
 
-# Creation of database 
+# Creation of in-memory database 
 user_info = []
 songs = []
 friends = []
@@ -287,8 +285,28 @@ def get_data(table_name):
     else:
         return jsonify({"status": "error", "message": "Invalid table name"}), 400
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
+
 # Get list of all Users
 # @app.route("/users", methods=["GET"])
 # def getAllUsers(id):
