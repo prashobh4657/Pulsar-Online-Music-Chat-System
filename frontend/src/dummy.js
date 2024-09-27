@@ -18,7 +18,6 @@ export const dummyFriends = [
                 id: '63',
                 isFriend: false,
                 time: '2:47 PM',
-
                 unreads: 3,
 
             },

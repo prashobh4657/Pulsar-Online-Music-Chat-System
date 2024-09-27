@@ -26,10 +26,9 @@ def home():
 
 secret_key = "dbms"
 
-users = [] #array of objects;
 @app.route("/users", methods=["GET"])
 def getAllUsers():
-    return jsonify(users), 200
+    return jsonify(user_info), 200
 
 # New User - Signup
 @app.route("/signup", methods=["POST"])
@@ -40,8 +39,8 @@ def userRegister():
     email = data.get('email')
     password = data.get('password')
 
-     # Check if username already exists
-    if any(user['email'] == email for user in users):
+    # Check if email already exists
+    if any(user['email'] == email for user in user_info):
         return jsonify({
             "success": False, 
             "error": { 
@@ -50,10 +49,12 @@ def userRegister():
                 }
             }
         }), 400
-    if any(user['username'] == username for user in users):
-        return jsonify({'message': 'Username already exists'}), 400
     
-    user_id = len(users) + 1
+    # Check if username already exists
+    if any(user['username'] == username for user in user_info):
+        return jsonify({'success': False, 'error': {'fields': {'username': 'Username already exists'}}}), 400
+    
+    user_id = len(user_info) + 1
 
     # Save user data
     user = {
@@ -63,7 +64,7 @@ def userRegister():
         'email': email,
         'password': password
     }
-    users.append(user)
+    user_info.append(user)
     return jsonify({"success": True, "message": "Signup successful"}), 201
 
 # User - Login
@@ -72,22 +73,15 @@ def userLogin():
     data = request.json
     username = data.get('username')
     password = data.get('password')
-    
     isUserNameFound = False
     isPasswordMatch = False
     user_data = {}
-
-    for user in users:
+    for user in user_info:
         if username == user['username']:
-            IsUserNameFound = True
+            isUserNameFound = True
             if password == user['password']:
                 isPasswordMatch = True
-                user_data = {
-                    "id": user["id"],
-                    "username": user["username"],
-                    "email": user["email"],
-                    "fullname": user["name"]
-                }
+                user_data=user
                 break
 
     if isPasswordMatch:
@@ -112,9 +106,6 @@ def userLogin():
             "message": "Login failed"
         }
         return jsonify(response), 400
-    
-
-
 
 
 
