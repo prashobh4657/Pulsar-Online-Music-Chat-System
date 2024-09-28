@@ -20,6 +20,7 @@ import { dummySearchResults, dummyPlaylist } from "../dummy";
 import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
 import { AdditionalInfoComponent } from "./Info";
+import { SongCard } from "./SongCard";
 const UserDashboard = ({ theme }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
@@ -159,7 +160,10 @@ const UserDashboard = ({ theme }) => {
                 <div className="user">
                   <div className="name">{user.name}</div>
                 </div>
-                <AdditionalInfoComponent time={user.time} unreads={user.unreads} />
+                <AdditionalInfoComponent
+                  time={user.time}
+                  unreads={user.unreads}
+                />
               </div>
             )}
           />
@@ -172,7 +176,10 @@ const UserDashboard = ({ theme }) => {
                 <div className="group">
                   <div className="name">{group.name}</div>
                 </div>
-                <AdditionalInfoComponent time={group.time} unreads={group.unreads} />
+                <AdditionalInfoComponent
+                  time={group.time}
+                  unreads={group.unreads}
+                />
               </div>
             )}
           />
@@ -194,38 +201,15 @@ const UserDashboard = ({ theme }) => {
             <div className="header">Your Favourites</div>
             <div className="content">
               {dummySearchResults?.songs?.slice(0, 6)?.map((song, i) => (
-                <div theme={theme.color} className="card-container" key={i}>
-                  {isPlaying && song.id === currSong.id ? (
-                    <div
-                      className={
-                        "music-bars" + (isPlaying ? " play" : " pause")
-                      }
-                    >
-                      <div className="bar a"></div>
-                      <div className="bar b"></div>
-                      <div className="bar c"></div>
-                      <div className="bar d"></div>
-                    </div>
-                  ) : (
-                    <div className="num">{i + 1}</div>
-                  )}
-                  {song.art ? (
-                    <img className="icon-art" src={song.art} alt="" />
-                  ) : (
-                    <div className="icon"></div>
-                  )}
-                  <div
-                    className={
-                      "song" + (song.id === currSong.id ? " selected" : "")
-                    }
-                    onClick={() => handlePlaySong(song, i)}
-                  >
-                    <div className="name">{song.name}</div>
-                    <div className="artist">{song.artist}</div>
-                    <div className="album">{song.album}</div>
-                    <div className="duration">{song.duration}</div>
-                  </div>
-                </div>
+                <SongCard
+                  key={i}
+                  song={song}
+                  index={i}
+                  isPlaying={isPlaying}
+                  currSong={currSong}
+                  theme={theme}
+                  handlePlaySong={handlePlaySong}
+                />
               ))}
             </div>
           </div>
