@@ -6,6 +6,8 @@ import datetime
 import time
 import json
 import jwt
+import subprocess
+import sys
 
 app = Flask(__name__)
 # app.config['MYSQL_HOST'] = 'localhost'
@@ -132,7 +134,9 @@ def insert_user_info(values):
         'fullname': values['fullname'],
         'username': values['username'],
         'email': values['email'],
-        'password': values['password']
+        'password': values['password'],
+        'time' : values['time'],
+        'unreads' : values['unreads']
     })
 
 def insert_songs(values):
@@ -277,25 +281,14 @@ def get_data(table_name):
         return jsonify({"status": "error", "message": "Invalid table name"}), 400
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+@app.route("/top-friends/<int:user_id>", methods=["GET"])
+def getTopFriends(user_id):
+    friend_ids = [f["friendid"] for f in friends if f["userid"] == user_id]
+    top_friends = [user for user in user_info if user["id"] in friend_ids]
+    return jsonify({"top_friends": top_friends}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-
-
 
 
 # Get list of all Users
@@ -475,6 +468,3 @@ if __name__ == '__main__':
 #     obj['songs'] = songs
 
 #     return json.dumps({ "data": obj, "success": True}, default=str)
-
-
-
