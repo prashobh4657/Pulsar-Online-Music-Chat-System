@@ -2,5 +2,25 @@
     {
         "userid": 1,
         "friendid": 2
+    },
+    {
+        "userid": 2,
+        "friendid": 1
+    },
+    {
+        "userid": 1,
+        "friendid": 3
+    },
+    {
+        "userid": 3,
+        "friendid": 1
+    },
+    {
+        "userid": 1,
+        "friendid": 4
+    },
+    {
+        "userid": 4,
+        "friendid": 1
     }
 ]

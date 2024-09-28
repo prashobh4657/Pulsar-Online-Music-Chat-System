@@ -5,6 +5,13 @@ import os
 # Base URL for the Flask API
 BASE_URL = "http://127.0.0.1:5000"
 
+try:
+    os.chdir("/Users/prashobh/Desktop/PROJECT1/database")  # Set the correct path to your JSON files
+    print(f"Current working directory: {os.getcwd()}")  # Verify the current working directory
+except FileNotFoundError:
+    print("Directory not found, please check the path.")
+    exit()
+
 # List of tables and their corresponding JSON file names
 tables = {
     "user_info": "user_info.json",
