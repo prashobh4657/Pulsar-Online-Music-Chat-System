@@ -19,7 +19,7 @@ import { themeColors } from "../config";
 import { dummySearchResults, dummyPlaylist } from "../dummy";
 import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
-
+import { AdditionalInfoComponent } from "./Info";
 const UserDashboard = ({ theme }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
@@ -159,12 +159,7 @@ const UserDashboard = ({ theme }) => {
                 <div className="user">
                   <div className="name">{user.name}</div>
                 </div>
-                <div className="info">
-                  <div className="date-time">{user.time}</div>
-                  {user.unreads > 0 && (
-                    <div className="unreads">{user.unreads}</div>
-                  )}
-                </div>
+                <AdditionalInfoComponent time={user.time} unreads={user.unreads} />
               </div>
             )}
           />
@@ -177,12 +172,7 @@ const UserDashboard = ({ theme }) => {
                 <div className="group">
                   <div className="name">{group.name}</div>
                 </div>
-                <div className="info">
-                  <div className="date-time">{group.time}</div>
-                  {group.unreads > 0 && (
-                    <div className="unreads">{group.unreads}</div>
-                  )}
-                </div>
+                <AdditionalInfoComponent time={group.time} unreads={group.unreads} />
               </div>
             )}
           />
