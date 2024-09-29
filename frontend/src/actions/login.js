@@ -9,12 +9,17 @@ import { ENDPOINTS } from "../utils/Constants";
 
 export const handleLogin = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_LOGIN_REQUEST);
-  const data = await apiRequest(ENDPOINTS.LOGIN, payload);
-  if (data.success) {
-    handleLoginSuccess(data.data, navigate);
-  } else {
-    handleLoginFailure(data.error);
+  try{
+    const data = await apiRequest(ENDPOINTS.LOGIN, payload);
+    if (data.success) {
+      handleLoginSuccess(data.data, navigate);
+    } else {
+      handleLoginFailure(data.error);
+    }
+  }catch(error){
+    handleLoginFailure(error)
   }
+  
 };
 export const handleSignout = (navigate) => {
   lS.remove("auth");

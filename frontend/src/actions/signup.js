@@ -12,7 +12,6 @@ export const handleSignup = async (payload, navigate) => {
       handleSignupFailure(data.error);
     }
   } catch (error) {
-    console.error("Signup error:", error);
     handleSignupFailure(error);
   }
 };
