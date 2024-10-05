@@ -94,3 +94,17 @@ export const apiRequest = async (endpoint, payload, method = 'POST') => {
   }
   return data;
 };
+
+export const apiGetRequest = async (endpoint) => {
+  const response = await fetch(API_BASE_URL + endpoint, {
+    method: 'GET',
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'An error occurred');
+  }
+  return data;
+};

@@ -3,4 +3,5 @@ export const NOTIFICATION_TIMEOUT = 3000;
 export const ENDPOINTS = {
     LOGIN: '/login',
     SIGNUP: '/signup',
+    USER_TABLE : '/data/user_info'
 }

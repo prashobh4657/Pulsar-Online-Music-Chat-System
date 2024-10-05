@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 // utils
-import { getReadableTime } from "../utils";
+import { apiGetRequest, apiRequest, getReadableTime } from "../utils";
 
 // icons
 import { IconContext } from "react-icons";
@@ -19,8 +19,8 @@ import { themeColors } from "../config";
 import { dummySearchResults, dummyPlaylist } from "../dummy";
 import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
-import { AdditionalInfoComponent } from "./Info";
 import { SongCard } from "./SongCard";
+import { ENDPOINTS } from "../utils/Constants";
 const UserDashboard = ({ theme }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
@@ -29,6 +29,8 @@ const UserDashboard = ({ theme }) => {
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState("all");
   const intervalRef = useRef();
+  const [userProfiles, setUserProfiles] = useState([]);
+
 
   useEffect(() => {
     handlePlay();
@@ -147,53 +149,36 @@ const UserDashboard = ({ theme }) => {
     return () => clearInterval(intervalRef.current);
   }, [handleDuration, isPlaying]);
 
+  useEffect(() => {
+    const fetchUserData = async() => {
+      try {
+        const data = await apiGetRequest(ENDPOINTS.USER_TABLE);
+        setUserProfiles(data || []);
+      } catch (error) {
+        console.error("Error fetching user profiles:", error);
+      }
+    };
+    fetchUserData();
+  }, []);
+
   return (
     <div className="user-dashboard-container">
       <div className="main-view">
         <DashSection>
           <BlockContainer
             header="Top Friends"
-            items={dummySearchResults?.profiles || []}
-            renderItem={(user, i) => (
-              <div theme={theme.color} className="card-container" key={i}>
-                <div className="icon friends"></div>
-                <div className="user">
-                  <div className="name">{user.name}</div>
-                </div>
-                <AdditionalInfoComponent
-                  time={user.time}
-                  unreads={user.unreads}
-                />
-              </div>
-            )}
+            items={userProfiles}
+            itemType="friends"
           />
           <BlockContainer
             header="Top Groups"
             items={dummySearchResults?.groups || []}
-            renderItem={(group, i) => (
-              <div theme={theme.color} className="card-container" key={i}>
-                <div className="icon groups"></div>
-                <div className="group">
-                  <div className="name">{group.name}</div>
-                </div>
-                <AdditionalInfoComponent
-                  time={group.time}
-                  unreads={group.unreads}
-                />
-              </div>
-            )}
+            itemType="groups"
           />
           <BlockContainer
             header="Top Playlists"
             items={dummySearchResults?.playlists || []}
-            renderItem={(playlist, i) => (
-              <div theme={theme.color} className="card-container" key={i}>
-                <div className="icon"></div>
-                <div className="playlist">
-                  <div className="name">{playlist.name}</div>
-                </div>
-              </div>
-            )}
+            itemType="playlists"
           />
         </DashSection>
         <DashSection>
