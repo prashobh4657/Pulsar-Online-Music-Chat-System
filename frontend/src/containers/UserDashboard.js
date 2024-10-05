@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { connect } from "react-redux";
 
 // utils
-import { apiGetRequest, apiRequest, getReadableTime } from "../utils";
+import { apiGetRequest, getReadableTime } from "../utils";
 
 // icons
 import { IconContext } from "react-icons";
@@ -21,7 +21,7 @@ import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
 import { SongCard } from "./SongCard";
 import { ENDPOINTS } from "../utils/Constants";
-const UserDashboard = ({ theme }) => {
+const UserDashboard = ({ theme,userId }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
   const [currDuration, setCurrDuration] = useState(0);
@@ -152,13 +152,21 @@ const UserDashboard = ({ theme }) => {
   useEffect(() => {
     const fetchUserData = async() => {
       try {
-        const data = await apiGetRequest(ENDPOINTS.USER_TABLE);
+        const data = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(1));
         setUserProfiles(data || []);
       } catch (error) {
         console.error("Error fetching user profiles:", error);
       }
     };
-    fetchUserData();
+    console.log("sdf");
+    console.log(userId);
+    console.log("sdf");
+
+    if(userId){
+      console.log(userId);
+      fetchUserData();
+    }
+    
   }, []);
 
   return (
@@ -305,6 +313,16 @@ const UserDashboard = ({ theme }) => {
     </div>
   );
 };
-export default connect((store) => ({
-  theme: store.theme,
-}))(UserDashboard);
+
+// Redux state mapping
+const mapStateToProps = (state) => ({
+  theme: state.theme,
+  userId: state.login.user.id  // Get user ID from Redux state
+});
+
+// Connect to Redux store
+export default connect(mapStateToProps)(UserDashboard);
+
+// export default connect((store) => ({
+//   theme: store.theme,
+// }))(UserDashboard);

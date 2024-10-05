@@ -285,7 +285,7 @@ def get_data(table_name):
 def getTopFriends(user_id):
     friend_ids = [f["friendid"] for f in friends if f["userid"] == user_id]
     top_friends = [user for user in user_info if user["id"] in friend_ids]
-    return jsonify({"top_friends": top_friends}), 200
+    return jsonify(top_friends), 200
 
 if __name__ == '__main__':
     app.run(debug=True)
