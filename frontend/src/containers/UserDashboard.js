@@ -21,7 +21,7 @@ import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
 import { SongCard } from "./SongCard";
 import { ENDPOINTS } from "../utils/Constants";
-const UserDashboard = ({ theme,userId }) => {
+const UserDashboard = ({ theme,loggedInUserId }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
   const [currDuration, setCurrDuration] = useState(0);
@@ -29,8 +29,20 @@ const UserDashboard = ({ theme,userId }) => {
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState("all");
   const intervalRef = useRef();
-  const [userProfiles, setUserProfiles] = useState([]);
 
+  const [topFriends, setUserTopFriends] = useState([]);
+  const [isloadingTopFriends, setIsloadingTopFriends] = useState(true);
+
+  const [topGroups, setUsertopGroups] = useState([]);
+  const [isloadingtopGroups, setIsloadingtopGroups] = useState(true);
+
+  const [topPlaylists, setUsertopPlaylists] = useState([]);
+  const [isloadingtopPlaylists, setIsloadingtopPlaylists] = useState(true);
+
+  const [favouriteSongs, setfavouriteSongs] = useState([]);
+  const [isloadingFavouriteSongs, setIsloadingFavouriteSongs] = useState(true);
+
+  
 
   useEffect(() => {
     handlePlay();
@@ -150,24 +162,33 @@ const UserDashboard = ({ theme,userId }) => {
   }, [handleDuration, isPlaying]);
 
   useEffect(() => {
-    const fetchUserData = async() => {
+    const fetchTopFriends = async() => {
       try {
-        const data = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(1));
-        setUserProfiles(data || []);
+        const data = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(loggedInUserId));
+        setUserTopFriends(data || []);
       } catch (error) {
-        console.error("Error fetching user profiles:", error);
+        console.error("Error fetching top friends:", error);
+      } finally{
+        setIsloadingTopFriends(false)
       }
     };
-    console.log("sdf");
-    console.log(userId);
-    console.log("sdf");
-
-    if(userId){
-      console.log(userId);
-      fetchUserData();
-    }
-    
+    fetchTopFriends();
   }, []);
+
+  useEffect(() => {
+    const fetchTopGroups = async() => {
+      try {
+        const data = await apiGetRequest(ENDPOINTS.TOP_GROUPS(loggedInUserId));
+        setUsertopGroups(data || []);
+      } catch (error) {
+        console.error("Error fetching top friends:", error);
+      } finally{
+        setIsloadingtopGroups(false)
+      }
+    };
+    fetchTopGroups();
+  }, []);
+
 
   return (
     <div className="user-dashboard-container">
@@ -175,13 +196,15 @@ const UserDashboard = ({ theme,userId }) => {
         <DashSection>
           <BlockContainer
             header="Top Friends"
-            items={userProfiles}
+            items={topFriends}
             itemType="friends"
+            isLoading={isloadingTopFriends}
           />
           <BlockContainer
             header="Top Groups"
-            items={dummySearchResults?.groups || []}
+            items={topGroups}
             itemType="groups"
+            isLoading={isloadingtopGroups}
           />
           <BlockContainer
             header="Top Playlists"
@@ -314,10 +337,12 @@ const UserDashboard = ({ theme,userId }) => {
   );
 };
 
+
 // Redux state mapping
+// Fetching from store
 const mapStateToProps = (state) => ({
   theme: state.theme,
-  userId: state.login.user.id  // Get user ID from Redux state
+  loggedInUserId: state.login.user.id 
 });
 
 // Connect to Redux store

@@ -12,8 +12,8 @@ export const dummyFriends = [
                 unreads: 2,
             },
             {
-                name: 'Shubhasri Tadepalli',
-                username: 'shubhasri',
+                name: 'Vijender',
+                username: 'Vijender',
                 email: '',
                 id: '63',
                 isFriend: false,

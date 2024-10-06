@@ -1,7 +1,72 @@
 [
     {
-        "artist": "Imagine Dragons",
-        "groupname": "Dragon Fans",
-        "description": "Group for Imagine Dragons fans"
+        "name": "Dragon Fans",
+        "description": "Group for Imagine Dragons fans",
+        "members" : 17
+    },
+    {
+        "name": "BeyHive",
+        "description": "Fans of Beyonce",
+        "members": 17
+    },
+    {
+        "name": "Swift Squad",
+        "description": "Fans of Taylor Swift",
+        "members": 21
+    },
+    {
+        "name": "Firebreathers",
+        "description": "Fans of Imagine Dragons",
+        "members": 12
+    },
+    {
+        "name": "KatyCats",
+        "description": "Fans of Katy Perry",
+        "members": 35
+    },
+    {
+        "name": "Harmonizers",
+        "description": "Fans of Fifth Harmony",
+        "members": 33
+    },
+    {
+        "name": "The Backstreet Boys",
+        "description": "Fans of Backstreet Boys, obviously!",
+        "members": 65
+    },
+    {
+        "name": "The Weeknders",
+        "description": "Fans of The Weeknd",
+        "members": 47
+    },
+    {
+        "name": "Beliebers",
+        "description": "Fans of Justin Bieber",
+        "members": 72
+    },
+    {
+        "name": "BTS A.R.M.Y",
+        "description": "Fans of BTS",
+        "members": 52
+    },
+    {
+        "name": "Coldplayers",
+        "description": "Fans of Coldplay",
+        "members": 55
+    },
+    {
+        "name": "Moonwalkers",
+        "description": "Fans of Michael Jackson",
+        "members": 94
+    },
+    {
+        "name": "Rihanna Navy",
+        "description": "Fans of Rihanna",
+        "members": 83
+    },
+    {
+        "name": "Sheerios",
+        "description": "Fans of Ed Sheeran",
+        "members": 29
     }
 ]

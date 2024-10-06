@@ -125,12 +125,12 @@ private_message = []
 group_message = []
 
 def get_next_id(table):
-    return len(table) + 1  # Use the length of the list as the next ID
+    return len(table) + 1  
 
 def insert_user_info(values):
     user_id = get_next_id(user_info)
     user_info.append({
-        'id': user_id,  # Add id field
+        'id': user_id,  
         'fullname': values['fullname'],
         'username': values['username'],
         'email': values['email'],
@@ -140,9 +140,9 @@ def insert_user_info(values):
     })
 
 def insert_songs(values):
-    sid = get_next_id(songs)  # Use get_next_id for song ID
+    sid = get_next_id(songs)  
     songs.append({
-        'id': sid,  # Add id field
+        'id': sid,  
         'title': values['title'],
         'artist': values['artist'],
         'album': values['album'],
@@ -157,18 +157,21 @@ def insert_friends(values):
     })
 
 def insert_artist_fan_group(values):
-    group_id = get_next_id(artist_fan_group)  # Use get_next_id for group ID
+    group_id = get_next_id(artist_fan_group)  
     artist_fan_group.append({
-        'id': group_id,  # Add id field
-        'artist': values['artist'],
-        'groupname': values['groupname'],
-        'description': values['description']
+        'id': group_id, 
+        'name': values['name'],
+        'description': values['description'],
+        'members': values['members']
     })
 
 def insert_group_members(values):
     group_members.append({
-        'groupid': int(values['groupid']),
-        'userid': int(values['userid'])
+        'userid': values['userid'],
+        'groupid': values['groupid'],
+        'joined' : values['joined'],
+        "time" : values['time'],
+        "unreads" : values['unreads'],
     })
 
 def insert_favourite_song_list(values):
@@ -178,9 +181,9 @@ def insert_favourite_song_list(values):
     })
 
 def insert_playlist_info(values):
-    pid = get_next_id(playlist_info)  # Use get_next_id for playlist ID
+    pid = get_next_id(playlist_info) 
     playlist_info.append({
-        'id': pid,  # Add id field
+        'id': pid,  
         'pname': values['pname']
     })
 
@@ -197,9 +200,9 @@ def insert_playlist_songs(values):
     })
 
 def insert_private_message(values):
-    msgid = get_next_id(private_message)  # Use get_next_id for message ID
+    msgid = get_next_id(private_message)  
     private_message.append({
-        'id': msgid,  # Add id field
+        'id': msgid, 
         'message_date': values['message_date'],
         'from1': int(values['from1']),
         'to1': int(values['to1']),
@@ -208,9 +211,9 @@ def insert_private_message(values):
     })
 
 def insert_group_message(values):
-    msgid = get_next_id(group_message)  # Use get_next_id for message ID
+    msgid = get_next_id(group_message) 
     group_message.append({
-        'id': msgid,  # Add id field
+        'id': msgid, 
         'message_date': values['message_date'],
         'from1': int(values['from1']),
         'groupid': int(values['groupid']),
@@ -235,11 +238,9 @@ table_insert_map = {
 @app.route('/insert', methods=['POST'])
 def insert_data():
     data = request.json
-    
     # Expecting the JSON structure to have 'table' and 'values'
     table_name = data['table']
     values = data['values']
-    
     # Check if the table name is valid and call the corresponding insert function
     if table_name in table_insert_map:
         # Ensure values are a list of dictionaries
@@ -286,6 +287,20 @@ def getTopFriends(user_id):
     friend_ids = [f["friendid"] for f in friends if f["userid"] == user_id]
     top_friends = [user for user in user_info if user["id"] in friend_ids]
     return jsonify(top_friends), 200
+
+
+@app.route("/top-groups/<int:user_id>", methods=["GET"])
+def getTopGroups(user_id):
+    user_top_groups=[]
+    for member in group_members:
+        if member['userid'] == user_id and member['joined']:
+            for group in artist_fan_group:
+                if group['id'] == member['groupid']:
+                    group_details = group.copy() 
+                    group_details['time'] = member['time']
+                    group_details['unreads'] = member['unreads']
+                    user_top_groups.append(group_details)
+    return jsonify(user_top_groups), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

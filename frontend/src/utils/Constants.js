@@ -4,5 +4,6 @@ export const ENDPOINTS = {
     LOGIN: '/login',
     SIGNUP: '/signup',
     USER_TABLE : '/data/user_info',
-    TOP_FRIENDS : (userId) => `/top-friends/${userId}`
+    TOP_FRIENDS : (userId) => `/top-friends/${userId}`,
+    TOP_GROUPS : (userId) => `/top-groups/${userId}`,
 }

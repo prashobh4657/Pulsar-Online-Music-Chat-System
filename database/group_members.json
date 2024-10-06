@@ -1,6 +1,9 @@
 [
     {
         "userid": 1,
-        "groupid": 1
+        "groupid": 1,
+        "joined" : true,
+        "time" : "9:40 AM",
+        "unreads" : 5
     }
 ]
