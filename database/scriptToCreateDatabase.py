@@ -3,10 +3,11 @@ import json
 import os
 
 # Base URL for the Flask API
-BASE_URL = "http://127.0.0.1:5000"
-
+BASE_URL_FLASK = "http://127.0.0.1:5000"
+COMPANY1_PATH_URL = "/Users/prashobh/Desktop/PROJECT1/database"
+COMPANY2_PATH_URL = "/Users/a61914/Desktop/PP/Pulsar-Online-Music-Chat-System/database"
 try:
-    os.chdir("/Users/prashobh/Desktop/PROJECT1/database")  # Set the correct path to your JSON files
+    os.chdir(COMPANY2_PATH_URL)  # Set the correct path to your JSON files
     print(f"Current working directory: {os.getcwd()}")  # Verify the current working directory
 except FileNotFoundError:
     print("Directory not found, please check the path.")
@@ -40,7 +41,7 @@ def read_json_file(filename):
     return None
 
 def insert_data(data):
-    url = f"{BASE_URL}/insert"
+    url = f"{BASE_URL_FLASK}/insert"
     response = requests.post(url, json=data)
     print(f"Response Status Code: {response.status_code}")
     if response.status_code == 201:
