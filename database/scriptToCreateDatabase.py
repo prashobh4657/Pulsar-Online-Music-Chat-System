@@ -4,10 +4,10 @@ import os
 
 # Base URL for the Flask API
 BASE_URL_FLASK = "http://127.0.0.1:5000"
-COMPANY1_PATH_URL = "/Users/prashobh/Desktop/PROJECT1/database"
-COMPANY2_PATH_URL = "/Users/a61914/Desktop/PP/Pulsar-Online-Music-Chat-System/database"
+PATH_URL = os.path.dirname(os.path.abspath(__file__))
+
 try:
-    os.chdir(COMPANY2_PATH_URL)  # Set the correct path to your JSON files
+    os.chdir(PATH_URL)  # Set the correct path to your JSON files
     print(f"Current working directory: {os.getcwd()}")  # Verify the current working directory
 except FileNotFoundError:
     print("Directory not found, please check the path.")
@@ -59,6 +59,4 @@ for table, json_file in tables.items():
     else:
         print(f"File {json_file} not found!")
 
-
-# RUN THIS SCRIPT WHEN CURRENT DIRECTORY IS IN DATABASE FOLDER ONLY;
-# print(f"Current working directory: {os.getcwd()}")  (IT SHOULD PRINT /database folder in which json files are present);
+print("Database population script completed.")
