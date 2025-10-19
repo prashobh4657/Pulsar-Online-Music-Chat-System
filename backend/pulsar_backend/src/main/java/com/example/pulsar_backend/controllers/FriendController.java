@@ -3,7 +3,7 @@ package com.example.pulsar_backend.controllers;
 import com.example.pulsar_backend.dto.ApiResponse;
 import com.example.pulsar_backend.dto.FriendListResponseDTO;
 import com.example.pulsar_backend.entity.FriendEntity;
-import com.example.pulsar_backend.service.FriendService;
+import com.example.pulsar_backend.service.IFriendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class FriendController {
-    private final FriendService friendService;
+    private final IFriendService friendService;
 
     @PostMapping("/request")
     public ResponseEntity<ApiResponse<FriendEntity>> sendRequest(@RequestParam Long userId, @RequestParam Long friendId) {

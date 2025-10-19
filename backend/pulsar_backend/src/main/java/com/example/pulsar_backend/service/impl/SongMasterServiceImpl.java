@@ -1,9 +1,10 @@
-package com.example.pulsar_backend.service;
+package com.example.pulsar_backend.service.impl;
 
+import com.example.pulsar_backend.dao.ISongMasterDao;
 import com.example.pulsar_backend.dto.SongMasterDTO;
 import com.example.pulsar_backend.entity.SongMasterEntity;
 import com.example.pulsar_backend.exception.ResourceNotFoundException;
-import com.example.pulsar_backend.repository.SongMasterRepository;
+import com.example.pulsar_backend.service.ISongMasterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SongMasterServiceImpl implements ISongMasterService {
 
-    private final SongMasterRepository songMasterRepository;
+    private final ISongMasterDao songMasterDao;
 
     @Override
     @Transactional
     public SongMasterDTO addSong(SongMasterDTO songDTO) {
         log.info("Adding new song: {}", songDTO.getTitle());
         SongMasterEntity songEntity = mapToEntity(songDTO);
-        SongMasterEntity savedSong = songMasterRepository.save(songEntity);
+        SongMasterEntity savedSong = songMasterDao.save(songEntity);
         log.info("Song added successfully with ID: {}", savedSong.getId());
         return mapToDTO(savedSong);
     }
@@ -37,7 +38,7 @@ public class SongMasterServiceImpl implements ISongMasterService {
                 .map(this::mapToEntity)
                 .collect(Collectors.toList());
         
-        List<SongMasterEntity> savedSongs = songMasterRepository.saveAll(songEntities);
+        List<SongMasterEntity> savedSongs = songMasterDao.saveAll(songEntities);
         log.info("Successfully added {} songs in bulk", savedSongs.size());
         
         return savedSongs.stream()
@@ -48,7 +49,7 @@ public class SongMasterServiceImpl implements ISongMasterService {
     @Override
     public SongMasterDTO getSongById(Long id) {
         log.info("Fetching song with ID: {}", id);
-        SongMasterEntity songEntity = songMasterRepository.findById(id)
+        SongMasterEntity songEntity = songMasterDao.findById(id)
                 .orElseThrow(() -> {
                     log.error("Song not found with ID: {}", id);
                     return new ResourceNotFoundException("Song not found with ID: " + id);

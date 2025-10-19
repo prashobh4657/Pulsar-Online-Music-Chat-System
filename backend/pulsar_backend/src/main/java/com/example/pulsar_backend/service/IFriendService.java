@@ -5,7 +5,7 @@ import com.example.pulsar_backend.entity.FriendEntity;
 
 import java.util.List;
 
-public interface FriendService {
+public interface IFriendService {
     FriendEntity sendRequest(Long userId, Long friendId);
     FriendEntity acceptRequest(Long userId, Long friendId);
     void rejectRequest(Long userId, Long friendId);

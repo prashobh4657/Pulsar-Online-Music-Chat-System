@@ -1,5 +1,6 @@
 package com.example.pulsar_backend.service.impl;
 
+import com.example.pulsar_backend.dao.IUserDao;
 import com.example.pulsar_backend.dto.LoginRequestDTO;
 import com.example.pulsar_backend.dto.SignupRequestDTO;
 import com.example.pulsar_backend.dto.UserResponseDTO;
@@ -7,7 +8,6 @@ import com.example.pulsar_backend.entity.UserEntity;
 import com.example.pulsar_backend.exception.InvalidCredentialsException;
 import com.example.pulsar_backend.exception.UserAlreadyExistsException;
 import com.example.pulsar_backend.exception.UserNotFoundException;
-import com.example.pulsar_backend.repository.UserRepository;
 import com.example.pulsar_backend.service.IUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements IUserService {
 
-    private final UserRepository userRepository;
+    private final IUserDao userDao;
 
     @Override
     @Transactional
@@ -40,7 +40,7 @@ public class UserServiceImpl implements IUserService {
                 .build();
         
         // Save user
-        UserEntity savedUser = userRepository.save(userEntity);
+        UserEntity savedUser = userDao.save(userEntity);
         log.info("User registered successfully with ID: {}", savedUser.getId());
         
         return mapToUserResponseDTO(savedUser);
@@ -66,7 +66,7 @@ public class UserServiceImpl implements IUserService {
                 .collect(Collectors.toList());
         
         // Save all users
-        List<UserEntity> savedUsers = userRepository.saveAll(userEntities);
+        List<UserEntity> savedUsers = userDao.saveAll(userEntities);
         log.info("Successfully registered {} users in bulk", savedUsers.size());
         
         return savedUsers.stream()
@@ -80,7 +80,7 @@ public class UserServiceImpl implements IUserService {
         log.info("Attempting login for username: {}", loginRequest.getUsername());
         
         // Find user by username
-        UserEntity user = userRepository.findByUsername(loginRequest.getUsername())
+        UserEntity user = userDao.findByUsername(loginRequest.getUsername())
                 .orElseThrow(() -> {
                     log.warn("User not found: {}", loginRequest.getUsername());
                     return new UserNotFoundException("Username not found");
@@ -100,7 +100,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
         log.info("Fetching all users");
-        return userRepository.findAll().stream()
+        return userDao.findAll().stream()
                 .map(this::mapToUserResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -109,7 +109,7 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Long id) {
         log.info("Fetching user by ID: {}", id);
-        UserEntity user = userRepository.findById(id)
+        UserEntity user = userDao.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
         return mapToUserResponseDTO(user);
     }
@@ -118,20 +118,20 @@ public class UserServiceImpl implements IUserService {
     @Transactional(readOnly = true)
     public UserResponseDTO getUserByUsername(String username) {
         log.info("Fetching user by username: {}", username);
-        UserEntity user = userRepository.findByUsername(username)
+        UserEntity user = userDao.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
         return mapToUserResponseDTO(user);
     }
 
     private void validateUserCanBeAdded(SignupRequestDTO signupRequest) {
         // Check if username already exists
-        if (userRepository.existsByUsername(signupRequest.getUserName())) {
+        if (userDao.existsByUsername(signupRequest.getUserName())) {
             log.warn("Username already exists: {}", signupRequest.getUserName());
             throw new UserAlreadyExistsException("Username already exists: " + signupRequest.getUserName());
         }
         
         // Check if email already exists
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+        if (userDao.existsByEmail(signupRequest.getEmail())) {
             log.warn("Email already exists: {}", signupRequest.getEmail());
             throw new UserAlreadyExistsException("Email already exists: " + signupRequest.getEmail());
         }

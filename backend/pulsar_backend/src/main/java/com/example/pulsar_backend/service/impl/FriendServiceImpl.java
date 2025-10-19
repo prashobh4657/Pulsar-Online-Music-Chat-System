@@ -1,14 +1,14 @@
 package com.example.pulsar_backend.service.impl;
 
+import com.example.pulsar_backend.dao.IFriendDao;
+import com.example.pulsar_backend.dao.IUserDao;
 import com.example.pulsar_backend.dto.FriendListResponseDTO;
 import com.example.pulsar_backend.dto.FriendshipDTO;
 import com.example.pulsar_backend.entity.FriendEntity;
 import com.example.pulsar_backend.enums.FriendshipStatus;
 import com.example.pulsar_backend.exception.ResourceNotFoundException;
 import com.example.pulsar_backend.exception.UserAlreadyExistsException;
-import com.example.pulsar_backend.repository.FriendRepository;
-import com.example.pulsar_backend.repository.UserRepository;
-import com.example.pulsar_backend.service.FriendService;
+import com.example.pulsar_backend.service.IFriendService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,10 +22,10 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FriendServiceImpl implements FriendService {
+public class FriendServiceImpl implements IFriendService {
 
-    private final FriendRepository friendRepository;
-    private final UserRepository userRepository;
+    private final IFriendDao friendDao;
+    private final IUserDao userDao;
 
     @Override
     @Transactional
@@ -33,10 +33,10 @@ public class FriendServiceImpl implements FriendService {
         log.info("User {} sending friend request to user {}", userId, friendId);
         
         // Validate users exist
-        if (!userRepository.existsById(userId)) {
+        if (!userDao.existsById(userId)) {
             throw new ResourceNotFoundException("User not found with ID: " + userId);
         }
-        if (!userRepository.existsById(friendId)) {
+        if (!userDao.existsById(friendId)) {
             throw new ResourceNotFoundException("Friend not found with ID: " + friendId);
         }
         
@@ -44,7 +44,7 @@ public class FriendServiceImpl implements FriendService {
         FriendshipDTO friendship = normalizeFriendship(userId, friendId);
         
         // Check if request already exists
-        if (friendRepository.existsByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())) {
+        if (friendDao.existsByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())) {
             throw new UserAlreadyExistsException("Friend request already exists");
         }
         
@@ -56,7 +56,7 @@ public class FriendServiceImpl implements FriendService {
                 .createdAt(LocalDateTime.now())
                 .build();
         
-        FriendEntity savedRequest = friendRepository.save(friendEntity);
+        FriendEntity savedRequest = friendDao.save(friendEntity);
         log.info("Friend request sent successfully with ID: {} (userId={}, friendId={})", 
                 savedRequest.getId(), friendship.getSmallerId(), friendship.getLargerId());
         return savedRequest;
@@ -71,7 +71,7 @@ public class FriendServiceImpl implements FriendService {
         FriendshipDTO friendship = normalizeFriendship(userId, friendId);
         
         // Find the friend request
-        FriendEntity friendRequest = friendRepository.findByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())
+        FriendEntity friendRequest = friendDao.findByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
         
         if (!FriendshipStatus.PENDING.name().equals(friendRequest.getStatus())) {
@@ -80,7 +80,7 @@ public class FriendServiceImpl implements FriendService {
         
         // Update status to ACCEPTED
         friendRequest.setStatus(FriendshipStatus.ACCEPTED.name());
-        FriendEntity updatedRequest = friendRepository.save(friendRequest);
+        FriendEntity updatedRequest = friendDao.save(friendRequest);
         log.info("Friend request accepted successfully");
         return updatedRequest;
     }
@@ -94,7 +94,7 @@ public class FriendServiceImpl implements FriendService {
         FriendshipDTO friendship = normalizeFriendship(userId, friendId);
         
         // Find the friend request
-        FriendEntity friendRequest = friendRepository.findByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())
+        FriendEntity friendRequest = friendDao.findByUserIdAndFriendId(friendship.getSmallerId(), friendship.getLargerId())
                 .orElseThrow(() -> new ResourceNotFoundException("Friend request not found"));
         
         if (!FriendshipStatus.PENDING.name().equals(friendRequest.getStatus())) {
@@ -103,7 +103,7 @@ public class FriendServiceImpl implements FriendService {
         
         // Update status to REJECTED or delete
         friendRequest.setStatus(FriendshipStatus.REJECTED.name());
-        friendRepository.save(friendRequest);
+        friendDao.save(friendRequest);
         log.info("Friend request rejected successfully");
     }
 
@@ -113,7 +113,7 @@ public class FriendServiceImpl implements FriendService {
         log.info("Fetching friends list for user {}", userId);
         
         // Get all accepted friend relationships where user is either userId or friendId
-        List<FriendEntity> sentRequests = friendRepository.findFriendsByUserIdAndStatus(userId, FriendshipStatus.ACCEPTED.name());
+        List<FriendEntity> sentRequests = friendDao.findFriendsByUserIdAndStatus(userId, FriendshipStatus.ACCEPTED.name());
         
         log.info("Found {} friends for user {}", sentRequests.size(), userId);
         return sentRequests;
@@ -125,7 +125,7 @@ public class FriendServiceImpl implements FriendService {
         log.info("Fetching pending friend requests for user {}", userId);
         
         // Get all pending requests where userId is the recipient (friendId)
-        List<FriendEntity> pendingRequests = friendRepository.findAllByFriendIdAndStatus(userId, FriendshipStatus.PENDING.name());
+        List<FriendEntity> pendingRequests = friendDao.findAllByFriendIdAndStatus(userId, FriendshipStatus.PENDING.name());
         
         log.info("Found {} pending requests for user {}", pendingRequests.size(), userId);
         return pendingRequests;
@@ -137,7 +137,7 @@ public class FriendServiceImpl implements FriendService {
         log.info("Fetching friends list with details for user {}", userId);
         
         // Get all accepted friend relationships
-        List<FriendEntity> friends = friendRepository.findFriendsByUserIdAndStatus(userId, FriendshipStatus.ACCEPTED.name());
+        List<FriendEntity> friends = friendDao.findFriendsByUserIdAndStatus(userId, FriendshipStatus.ACCEPTED.name());
         
         // Extract all friend IDs
         List<Long> friendIds = friends.stream()
@@ -145,7 +145,7 @@ public class FriendServiceImpl implements FriendService {
                 .collect(Collectors.toList());
         
         // Fetch all friend users in a single query
-        var friendUsers = userRepository.findAllById(friendIds).stream()
+        var friendUsers = userDao.findAllById(friendIds).stream()
                 .collect(Collectors.toMap(
                         user -> user.getId(),
                         user -> user.getFullname()
