@@ -6,6 +6,6 @@ export const ENDPOINTS = {
     LOGIN: '/v1/api/login',
     SIGNUP: '/v1/api/signup',
     USER_TABLE : '/data/user_info',
-    TOP_FRIENDS : (userId) => `/top-friends/${userId}`,
+    TOP_FRIENDS: (userId) => `/v1/api/friends/list/details?userId=${userId}`,
     TOP_GROUPS : (userId) => `/top-groups/${userId}`,
 }

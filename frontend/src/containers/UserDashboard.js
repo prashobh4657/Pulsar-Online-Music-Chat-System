@@ -164,8 +164,9 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
   useEffect(() => {
     const fetchTopFriends = async() => {
       try {
-        const data = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(loggedInUserId));
-        setUserTopFriends(data || []);
+        const response = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(loggedInUserId));
+        console.log("Top friends",response);
+        setUserTopFriends(response.data || []);
       } catch (error) {
         console.error("Error fetching top friends:", error);
       } finally{
