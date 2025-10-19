@@ -3,7 +3,7 @@ package com.example.pulsar_backend.controllers;
 import com.example.pulsar_backend.dto.LoginRequestDTO;
 import com.example.pulsar_backend.dto.SignupRequestDTO;
 import com.example.pulsar_backend.dto.UserResponseDTO;
-import com.example.pulsar_backend.response.ApiResponse;
+import com.example.pulsar_backend.dto.ApiResponse;
 import com.example.pulsar_backend.service.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -54,6 +54,14 @@ public class UserController {
         log.info("POST /v1/api/signup - User registered successfully with ID: {}, username: {}", 
                 newUser.getId(), newUser.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.buildSuccessResponse("User registered successfully", newUser));
+    }
+
+    @PostMapping("/signup/bulk")
+    public ResponseEntity<ApiResponse<List<UserResponseDTO>>> signupBulk(@Valid @RequestBody List<SignupRequestDTO> signupRequests) {
+        log.info("POST /v1/api/signup/bulk - Bulk signup request received for {} users", signupRequests.size());
+        List<UserResponseDTO> newUsers = userService.registerUsersInBulk(signupRequests);
+        log.info("POST /v1/api/signup/bulk - Successfully registered {} users", newUsers.size());
+        return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.buildSuccessResponse("Users registered successfully", newUsers));
     }
 
     @PostMapping("/login")

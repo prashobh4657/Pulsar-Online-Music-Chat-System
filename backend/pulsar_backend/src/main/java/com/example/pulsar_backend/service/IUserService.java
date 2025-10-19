@@ -10,6 +10,8 @@ public interface IUserService {
     
     UserResponseDTO registerUser(SignupRequestDTO signupRequest);
     
+    List<UserResponseDTO> registerUsersInBulk(List<SignupRequestDTO> signupRequests);
+    
     UserResponseDTO loginUser(LoginRequestDTO loginRequest);
     
     List<UserResponseDTO> getAllUsers();

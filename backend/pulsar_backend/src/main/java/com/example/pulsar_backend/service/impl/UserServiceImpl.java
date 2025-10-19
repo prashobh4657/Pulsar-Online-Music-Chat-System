@@ -29,30 +29,49 @@ public class UserServiceImpl implements IUserService {
     public UserResponseDTO registerUser(SignupRequestDTO signupRequest) {
         log.info("Attempting to register user with username: {}", signupRequest.getUserName());
         
-        // Check if username already exists
-        if (userRepository.existsByUsername(signupRequest.getUserName())) {
-            log.warn("Username already exists: {}", signupRequest.getUserName());
-            throw new UserAlreadyExistsException("Username already exists");
-        }
-        
-        // Check if email already exists
-        if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            log.warn("Email already exists: {}", signupRequest.getEmail());
-            throw new UserAlreadyExistsException("Email already exists");
-        }
+        validateUserCanBeAdded(signupRequest);
         
         // Create new user entity
-        UserEntity userEntity = new UserEntity();
-        userEntity.setFullname(signupRequest.getFullName());
-        userEntity.setUsername(signupRequest.getUserName());
-        userEntity.setEmail(signupRequest.getEmail());
-        userEntity.setPassword(signupRequest.getPassword()); // TODO: Hash password with BCrypt
+        UserEntity userEntity = UserEntity.builder()
+                .fullname(signupRequest.getFullName())
+                .username(signupRequest.getUserName())
+                .email(signupRequest.getEmail())
+                .password(signupRequest.getPassword()) // TODO: Hash password with BCrypt
+                .build();
         
         // Save user
         UserEntity savedUser = userRepository.save(userEntity);
         log.info("User registered successfully with ID: {}", savedUser.getId());
         
         return mapToUserResponseDTO(savedUser);
+    }
+
+    @Override
+    @Transactional
+    public List<UserResponseDTO> registerUsersInBulk(List<SignupRequestDTO> signupRequests) {
+        log.info("Attempting to register {} users in bulk", signupRequests.size());
+        
+        List<UserEntity> userEntities = signupRequests.stream()
+                .map(signupRequest -> {
+                    validateUserCanBeAdded(signupRequest);
+                    
+                    // Create new user entity
+                    return UserEntity.builder()
+                            .fullname(signupRequest.getFullName())
+                            .username(signupRequest.getUserName())
+                            .email(signupRequest.getEmail())
+                            .password(signupRequest.getPassword()) // TODO: Hash password with BCrypt
+                            .build();
+                })
+                .collect(Collectors.toList());
+        
+        // Save all users
+        List<UserEntity> savedUsers = userRepository.saveAll(userEntities);
+        log.info("Successfully registered {} users in bulk", savedUsers.size());
+        
+        return savedUsers.stream()
+                .map(this::mapToUserResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -102,6 +121,20 @@ public class UserServiceImpl implements IUserService {
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found with username: " + username));
         return mapToUserResponseDTO(user);
+    }
+
+    private void validateUserCanBeAdded(SignupRequestDTO signupRequest) {
+        // Check if username already exists
+        if (userRepository.existsByUsername(signupRequest.getUserName())) {
+            log.warn("Username already exists: {}", signupRequest.getUserName());
+            throw new UserAlreadyExistsException("Username already exists: " + signupRequest.getUserName());
+        }
+        
+        // Check if email already exists
+        if (userRepository.existsByEmail(signupRequest.getEmail())) {
+            log.warn("Email already exists: {}", signupRequest.getEmail());
+            throw new UserAlreadyExistsException("Email already exists: " + signupRequest.getEmail());
+        }
     }
 
     private UserResponseDTO mapToUserResponseDTO(UserEntity user) {

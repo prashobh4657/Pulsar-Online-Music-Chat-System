@@ -1,4 +1,4 @@
-package com.example.pulsar_backend.response;
+package com.example.pulsar_backend.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
