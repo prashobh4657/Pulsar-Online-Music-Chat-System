@@ -32,7 +32,7 @@ const Groups = ({ theme, user }) => {
         setCurrChat([
             ...currChat,
             {
-                name: user.fullname,
+                name: user.fullName,
                 username: user.username,
                 id: user.id,
                 message: newMessage,

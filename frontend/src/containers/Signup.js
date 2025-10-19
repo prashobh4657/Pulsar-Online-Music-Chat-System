@@ -18,8 +18,8 @@ import { dispatchAction } from "../utils";
 
 const Signup = ({ signup }) => {
   const [data, setData] = useState({
-    fullname: "",
-    username: "",
+    fullName: "",
+    userName: "",
     email: "",
     password: "",
   });
@@ -51,15 +51,15 @@ const Signup = ({ signup }) => {
           <div className="header">Sign Up</div>
           <InputField
             label="Full Name"
-            value={data.fullname}
-            onChange={(e) => handleForm("fullname", e.target.value)}
-            validationMessage={validations.fullname || ""}
+            value={data.fullName}
+            onChange={(e) => handleForm("fullName", e.target.value)}
+            validationMessage={validations.fullName || ""}
           />
           <InputField
             label="Username"
-            value={data.username}
-            onChange={(e) => handleForm("username", e.target.value)}
-            validationMessage={validations.username || ""}
+            value={data.userName}
+            onChange={(e) => handleForm("userName", e.target.value)}
+            validationMessage={validations.userName || ""}
           />
           <InputField
             label="Email"

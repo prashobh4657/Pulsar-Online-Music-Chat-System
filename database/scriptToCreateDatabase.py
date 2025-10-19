@@ -7,8 +7,8 @@ BASE_URL_FLASK = "http://127.0.0.1:5000"
 PATH_URL = os.path.dirname(os.path.abspath(__file__))
 
 try:
-    os.chdir(PATH_URL)  # Set the correct path to your JSON files
-    print(f"Current working directory: {os.getcwd()}")  # Verify the current working directory
+    os.chdir(PATH_URL)  
+    print(f"Current working directory: {os.getcwd()}") 
 except FileNotFoundError:
     print("Directory not found, please check the path.")
     exit()

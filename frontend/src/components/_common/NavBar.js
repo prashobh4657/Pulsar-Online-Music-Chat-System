@@ -108,7 +108,7 @@ const NavBar = ({
 
   const handleSignoutAndNavigate = useCallback(() => {
     handleSignout(navigate);
-    navigate("/login");
+    navigate("/v1/api/login");
   }, [navigate]);
 
   const handleViewProfile = useCallback(() => {

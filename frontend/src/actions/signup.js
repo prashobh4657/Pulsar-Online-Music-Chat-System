@@ -5,9 +5,13 @@ import { dispatchAction, showNotification, apiRequest } from "../utils/index";
 export const handleSignup = async (payload, navigate) => {
   dispatchAction(ActionTypes.USER_SIGNUP_REQUEST);
   try {
+    console.log("Signup Payload:", payload);
     const data = await apiRequest(ENDPOINTS.SIGNUP, payload);
+    console.log("Signup Response:", data);
+        console.log("Signup Response:", data.success);
+
     if (data.success) {
-      handleSignupSuccess(payload.username, data.message, navigate);
+      handleSignupSuccess(payload.userName, data.message, navigate);
     } else {
       handleSignupFailure(data.error);
     }
@@ -16,10 +20,10 @@ export const handleSignup = async (payload, navigate) => {
   }
 };
 
-const handleSignupSuccess = (username, message, navigate) => {
-  dispatchAction(ActionTypes.USER_SIGNUP_SUCCESS, { username });
+const handleSignupSuccess = (userName, message, navigate) => {
+  dispatchAction(ActionTypes.USER_SIGNUP_SUCCESS, { userName });
   showNotification(message);
-  setTimeout(() => navigate("/login"), 500);
+  setTimeout(() => navigate("v1/api/login"), 500);
 };
 
 const handleSignupFailure = (error) => {

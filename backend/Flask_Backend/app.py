@@ -33,7 +33,7 @@ def getAllUsers():
     return jsonify(user_info), 200
 
 # New User - Signup
-@app.route("/signup", methods=["POST"])
+@app.route("v1/api/signup", methods=["POST"])
 def userRegister():
     data = request.json
     fullname = data.get('fullname')

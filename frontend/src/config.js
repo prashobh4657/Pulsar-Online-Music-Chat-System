@@ -27,12 +27,12 @@ export const dashboardNavBarTabs = [
     {
         label: 'Log In',
         value: 'login',
-        path: '/login',
+        path: 'v1/api/login',
     },
     {
         label: 'Sign Up',
         value: 'signup',
-        path: '/signup',
+        path: 'v1/api/signup',
     },
 ];
 

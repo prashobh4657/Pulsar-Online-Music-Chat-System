@@ -9,7 +9,7 @@ export const BlockContainer = ({ header,items,itemType,isLoading }) => {
           <div className="card-container" key={i}>
             <div className="icon friends"></div>
             <div className="user">
-              <div className="name">{item.fullname}</div>
+              <div className="name">{item.fullName}</div>
             </div>
             <AdditionalInfoComponent
               time={item.time}
