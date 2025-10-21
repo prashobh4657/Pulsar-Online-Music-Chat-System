@@ -7,5 +7,7 @@ export const ENDPOINTS = {
     SIGNUP: '/v1/api/signup',
     USER_TABLE : '/data/user_info',
     TOP_FRIENDS: (userId) => `/v1/api/friends/list/details?userId=${userId}`,
-    TOP_GROUPS : (userId) => `/top-groups/${userId}`,
+    TOP_GROUPS : (userId) => `/v1/api/group/user/${userId}/groups`,
+    FAVOURITE_SONGS : (userId) => `/v1/api/favorites/user/${userId}/songs`,
+    DASHBOARD_SEARCH : (search) => `/v1/api/dashboard/search?search=${search}`,
 }

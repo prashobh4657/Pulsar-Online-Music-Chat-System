@@ -1,5 +1,6 @@
 package com.example.pulsar_backend.service;
 
+import com.example.pulsar_backend.dto.GroupResponseDTO;
 import com.example.pulsar_backend.entity.GroupMasterEntity;
 import com.example.pulsar_backend.entity.UserEntity;
 
@@ -12,4 +13,5 @@ public interface IGroupService {
     String addUserToGroup(Long userId, Long groupId);
     Set<UserEntity> getGroupUsers(Long groupId);
     Set<GroupMasterEntity> getUserGroups(Long userId);
+    Set<GroupResponseDTO> getUserGroupsWithMetadata(Long userId);
 }

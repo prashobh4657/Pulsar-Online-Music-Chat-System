@@ -1,6 +1,7 @@
 package com.example.pulsar_backend.controllers;
 
 import com.example.pulsar_backend.dto.ApiResponse;
+import com.example.pulsar_backend.dto.GroupResponseDTO;
 import com.example.pulsar_backend.entity.GroupMasterEntity;
 import com.example.pulsar_backend.entity.UserEntity;
 import com.example.pulsar_backend.service.IGroupService;
@@ -59,9 +60,9 @@ public class GroupController {
     }
 
     @GetMapping("/user/{userId}/groups")
-    public ResponseEntity<ApiResponse<Set<GroupMasterEntity>>> getUserGroups(@PathVariable Long userId) {
+    public ResponseEntity<ApiResponse<Set<GroupResponseDTO>>> getUserGroups(@PathVariable Long userId) {
         log.info("GET /v1/api/group/user/{}/groups - Fetching groups for user", userId);
-        Set<GroupMasterEntity> groups = groupService.getUserGroups(userId);
+        Set<GroupResponseDTO> groups = groupService.getUserGroupsWithMetadata(userId);
         log.info("GET /v1/api/group/user/{}/groups - Found {} groups", userId, groups.size());
         return ResponseEntity.ok(ApiResponse.buildSuccessResponse("Groups retrieved successfully", groups));
     }

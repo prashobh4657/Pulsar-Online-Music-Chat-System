@@ -21,7 +21,7 @@ import { DashSection } from "./DashSection";
 import { BlockContainer } from "./BlockContainer";
 import { SongCard } from "./SongCard";
 import { ENDPOINTS } from "../utils/Constants";
-const UserDashboard = ({ theme,loggedInUserId }) => {
+const UserDashboard = ({ theme, loggedInUserId }) => {
   const [currSong, setCurrSong] = useState(dummyPlaylist.songs[1]);
   const [currSongIndex, setCurrSongIndex] = useState(1);
   const [currDuration, setCurrDuration] = useState(0);
@@ -39,10 +39,8 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
   const [topPlaylists, setUsertopPlaylists] = useState([]);
   const [isloadingtopPlaylists, setIsloadingtopPlaylists] = useState(true);
 
-  const [favouriteSongs, setfavouriteSongs] = useState([]);
-  const [isloadingFavouriteSongs, setIsloadingFavouriteSongs] = useState(true);
-
-  
+  const [favouriteSongs, setFavouriteSongs] = useState([]);
+  const [isLoadingFavouriteSongs, setIsLoadingFavouriteSongs] = useState(true);
 
   useEffect(() => {
     handlePlay();
@@ -51,7 +49,7 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
   const handlePlay = () => {
     setIsPlaying(true);
     if (!currSong.id) {
-      setCurrSong(dummyPlaylist.songs[0]);
+      setCurrSong(favouriteSongs.songs[0]);
       setCurrSongIndex(0);
     }
   };
@@ -65,58 +63,105 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
     setCurrDuration(parseInt(value));
   };
 
+  // const handleActions = useCallback(
+  //   (action = "next") => {
+  //     switch (action) {
+  //       case "next":
+  //         setCurrSong(
+  //           favouriteSongs.songs[currSongIndex === 9 ? 0 : currSongIndex + 1]
+  //         );
+  //         setCurrSongIndex(currSongIndex === 9 ? 0 : currSongIndex + 1);
+  //         setCurrDuration(0);
+  //         if (!isPlaying) {
+  //           setIsPlaying(true);
+  //         }
+  //         break;
+
+  //       case "previous":
+  //         setCurrSong(
+  //           favouriteSongs.songs[currSongIndex === 0 ? 9 : currSongIndex - 1]
+  //         );
+  //         setCurrSongIndex(currSongIndex === 0 ? 9 : currSongIndex - 1);
+  //         setCurrDuration(0);
+  //         if (!isPlaying) {
+  //           setIsPlaying(true);
+  //         }
+  //         break;
+
+  //       case "shuffle":
+  //         setIsShuffle(!isShuffle);
+  //         break;
+
+  //       case "repeat":
+  //         if (isRepeat === "off") {
+  //           setIsRepeat("all");
+  //         } else if (isRepeat === "all") {
+  //           setIsRepeat("one");
+  //         } else {
+  //           setIsRepeat("off");
+  //         }
+  //         break;
+
+  //       case "like":
+  //         setCurrSong({
+  //           ...currSong,
+  //           liked: !currSong.liked,
+  //         });
+  //         break;
+
+  //       default:
+  //         break;
+  //     }
+  //   },
+  //   [isPlaying, isShuffle, isRepeat, currSong, currSongIndex]
+  // );
+
+
   const handleActions = useCallback(
-    (action = "next") => {
-      switch (action) {
-        case "next":
-          setCurrSong(
-            dummyPlaylist.songs[currSongIndex === 9 ? 0 : currSongIndex + 1]
-          );
-          setCurrSongIndex(currSongIndex === 9 ? 0 : currSongIndex + 1);
-          setCurrDuration(0);
-          if (!isPlaying) {
-            setIsPlaying(true);
-          }
-          break;
+  (action = "next") => {
+    const playlist = favouriteSongs.length ? favouriteSongs : dummyPlaylist.songs;  
+    const lastIndex = playlist.length - 1;
 
-        case "previous":
-          setCurrSong(
-            dummyPlaylist.songs[currSongIndex === 0 ? 9 : currSongIndex - 1]
-          );
-          setCurrSongIndex(currSongIndex === 0 ? 9 : currSongIndex - 1);
-          setCurrDuration(0);
-          if (!isPlaying) {
-            setIsPlaying(true);
-          }
-          break;
+    switch (action) {
+      case "next":
+        const nextIndex = currSongIndex >= lastIndex ? 0 : currSongIndex + 1;
+        setCurrSong(playlist[nextIndex]);
+        setCurrSongIndex(nextIndex);
+        setCurrDuration(0);
+        if (!isPlaying) setIsPlaying(true);
+        break;
 
-        case "shuffle":
-          setIsShuffle(!isShuffle);
-          break;
+      case "previous":
+        const prevIndex = currSongIndex <= 0 ? lastIndex : currSongIndex - 1;
+        setCurrSong(playlist[prevIndex]);
+        setCurrSongIndex(prevIndex);
+        setCurrDuration(0);
+        if (!isPlaying) setIsPlaying(true);
+        break;
 
-        case "repeat":
-          if (isRepeat === "off") {
-            setIsRepeat("all");
-          } else if (isRepeat === "all") {
-            setIsRepeat("one");
-          } else {
-            setIsRepeat("off");
-          }
-          break;
+      case "shuffle":
+        setIsShuffle(!isShuffle);
+        break;
 
-        case "like":
-          setCurrSong({
-            ...currSong,
-            liked: !currSong.liked,
-          });
-          break;
+      case "repeat":
+        if (isRepeat === "off") setIsRepeat("all");
+        else if (isRepeat === "all") setIsRepeat("one");
+        else setIsRepeat("off");
+        break;
 
-        default:
-          break;
-      }
-    },
-    [isPlaying, isShuffle, isRepeat, currSong, currSongIndex]
-  );
+      case "like":
+        setCurrSong({
+          ...currSong,
+          liked: !currSong.liked,
+        });
+        break;
+
+      default:
+        break;
+    }
+  },
+  [currSongIndex, favouriteSongs, currSong, isPlaying, isShuffle, isRepeat]
+);
 
   const handlePlaySong = (song, index) => {
     setCurrDuration(0);
@@ -162,34 +207,56 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
   }, [handleDuration, isPlaying]);
 
   useEffect(() => {
-    const fetchTopFriends = async() => {
+    const fetchTopFriends = async () => {
       try {
-        const response = await apiGetRequest(ENDPOINTS.TOP_FRIENDS(loggedInUserId));
-        console.log("Top friends",response);
+        const response = await apiGetRequest(
+          ENDPOINTS.TOP_FRIENDS(loggedInUserId)
+        );
+        console.log("Top friends", response);
         setUserTopFriends(response.data || []);
       } catch (error) {
         console.error("Error fetching top friends:", error);
-      } finally{
-        setIsloadingTopFriends(false)
+      } finally {
+        setIsloadingTopFriends(false);
       }
     };
     fetchTopFriends();
   }, []);
 
   useEffect(() => {
-    const fetchTopGroups = async() => {
+    const fetchTopGroups = async () => {
       try {
-        const data = await apiGetRequest(ENDPOINTS.TOP_GROUPS(loggedInUserId));
-        setUsertopGroups(data || []);
+        const response = await apiGetRequest(
+          ENDPOINTS.TOP_GROUPS(loggedInUserId)
+        );
+        console.log("Top groups", response);
+        setUsertopGroups(response.data || []);
       } catch (error) {
         console.error("Error fetching top friends:", error);
-      } finally{
-        setIsloadingtopGroups(false)
+      } finally {
+        setIsloadingtopGroups(false);
       }
     };
     fetchTopGroups();
   }, []);
 
+  useEffect(() => {
+    const fetchFavouriteSongs = async () => {
+      try {
+        const response = await apiGetRequest(
+          ENDPOINTS.FAVOURITE_SONGS(loggedInUserId)
+        );
+        console.log("Favourite songs", response);
+        setFavouriteSongs(response.data || []);
+      } catch (error) {
+        console.error("Error fetching favourite songs:", error);
+      } finally {
+        setIsLoadingFavouriteSongs(false);
+      }
+    };
+
+    fetchFavouriteSongs();
+  }, [loggedInUserId]);
 
   return (
     <div className="user-dashboard-container">
@@ -217,19 +284,28 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
           <div className="block-container large">
             <div className="header">Your Favourites</div>
             <div className="content">
-              {dummySearchResults?.songs?.slice(0, 6)?.map((song, i) => (
-                <SongCard
-                  key={i}
-                  song={song}
-                  index={i}
-                  isPlaying={isPlaying}
-                  currSong={currSong}
-                  theme={theme}
-                  handlePlaySong={handlePlaySong}
-                />
-              ))}
+              {isLoadingFavouriteSongs ? (
+                <p>Loading favourites...</p>
+              ) : favouriteSongs.length === 0 ? (
+                <p>No favourite songs found.</p>
+              ) : (
+                favouriteSongs
+                  .slice(0, 5)
+                  .map((song, i) => (
+                    <SongCard
+                      key={song.id || i}
+                      song={song}
+                      index={i}
+                      isPlaying={isPlaying}
+                      currSong={currSong}
+                      theme={theme}
+                      handlePlaySong={handlePlaySong}
+                    />
+                  ))
+              )}
             </div>
           </div>
+
           <div className="block-container now-playing">
             <div className="content">
               {currSong.art ? (
@@ -338,12 +414,11 @@ const UserDashboard = ({ theme,loggedInUserId }) => {
   );
 };
 
-
 // Redux state mapping
 // Fetching from store
 const mapStateToProps = (state) => ({
   theme: state.theme,
-  loggedInUserId: state.login.user.id 
+  loggedInUserId: state.login.user.id,
 });
 
 // Connect to Redux store

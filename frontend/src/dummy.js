@@ -12,7 +12,7 @@ export const dummyFriends = [
                 unreads: 2,
             },
             {
-                name: 'Vijender',
+                name: 'Vijender', 
                 username: 'Vijender',
                 email: '',
                 id: '63',

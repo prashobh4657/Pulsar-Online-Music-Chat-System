@@ -10,5 +10,6 @@ public interface ISongMasterDao {
     List<SongMasterEntity> saveAll(List<SongMasterEntity> songs);
     Optional<SongMasterEntity> findById(Long id);
     List<SongMasterEntity> findAll();
+    List<SongMasterEntity> findAllByIdIn(List<Long> ids);
     void deleteById(Long id);
 }

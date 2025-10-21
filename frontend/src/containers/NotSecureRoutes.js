@@ -9,7 +9,7 @@ const NotSecureRoutes = () => {
         <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/v1/api/signup" element={<Signup />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
     );

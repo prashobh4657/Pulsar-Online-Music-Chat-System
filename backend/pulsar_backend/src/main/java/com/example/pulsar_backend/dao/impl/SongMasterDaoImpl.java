@@ -41,6 +41,12 @@ public class SongMasterDaoImpl implements ISongMasterDao {
     }
 
     @Override
+    public List<SongMasterEntity> findAllByIdIn(List<Long> ids) {
+        log.debug("DAO: Finding songs by IDs: {}", ids);
+        return songMasterRepository.findAllByIdIn(ids);
+    }
+
+    @Override
     public void deleteById(Long id) {
         log.debug("DAO: Deleting song by ID: {}", id);
         songMasterRepository.deleteById(id);

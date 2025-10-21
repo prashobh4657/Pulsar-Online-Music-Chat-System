@@ -26,7 +26,7 @@ export const BlockContainer = ({ header,items,itemType,isLoading }) => {
             </div>
             <AdditionalInfoComponent
               time={item.time}
-              unreads={item.unreads}
+              unreads={item.unread}
             />
           </div>
         );

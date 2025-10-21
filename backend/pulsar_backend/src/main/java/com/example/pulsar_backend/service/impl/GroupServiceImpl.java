@@ -3,6 +3,7 @@ package com.example.pulsar_backend.service.impl;
 import com.example.pulsar_backend.dao.IGroupDao;
 import com.example.pulsar_backend.dao.IUserDao;
 import com.example.pulsar_backend.dao.IUserGroupMappingDao;
+import com.example.pulsar_backend.dto.GroupResponseDTO;
 import com.example.pulsar_backend.entity.GroupMasterEntity;
 import com.example.pulsar_backend.entity.UserEntity;
 import com.example.pulsar_backend.entity.UserGroupMappingEntity;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -101,6 +103,33 @@ public class GroupServiceImpl implements IGroupService {
         Set<GroupMasterEntity> groups = mappings.stream()
                 .map(mapping -> groupDao.findById(mapping.getGroupId())
                         .orElseThrow(() -> new RuntimeException("Group not found with ID: " + mapping.getGroupId())))
+                .collect(Collectors.toSet());
+        log.info("Found {} groups for user ID: {}", groups.size(), userId);
+        return groups;
+    }
+
+    public Set<GroupResponseDTO> getUserGroupsWithMetadata(Long userId) {
+        log.info("Fetching groups with metadata for user ID: {}", userId);
+        // Verify user exists
+        userDao.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("User not found with ID: {}", userId);
+                    return new RuntimeException("User not found");
+                });
+        
+        List<UserGroupMappingEntity> mappings = userGroupMappingDao.findByUserId(userId);
+        Set<GroupResponseDTO> groups = mappings.stream()
+                .map(mapping -> {
+                    GroupMasterEntity group = groupDao.findById(mapping.getGroupId())
+                            .orElseThrow(() -> new RuntimeException("Group not found with ID: " + mapping.getGroupId()));
+                    return GroupResponseDTO.builder()
+                            .id(group.getId())
+                            .name(group.getName())
+                            .description(group.getDescription())
+                            .time(LocalDateTime.now())
+                            .unread(5)
+                            .build();
+                })
                 .collect(Collectors.toSet());
         log.info("Found {} groups for user ID: {}", groups.size(), userId);
         return groups;
